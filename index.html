@@ -20,6 +20,103 @@
         padding-top: 70px;
         /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
     }
+
+
+    h2 {
+  font-family:sans-serif;
+}
+.list {
+  font-family:sans-serif;
+  margin:0;
+  padding:20px 0 0;
+}
+.list > li {
+  display:block;
+  background-color: #eee;
+  padding:10px;
+  box-shadow: inset 0 1px 0 #fff;
+}
+.avatar {
+  max-width: 150px;
+}
+img {
+  max-width: 100%;
+}
+h3 {
+  font-size: 16px;
+  margin:0 0 0.3rem;
+  font-weight: normal;
+  font-weight:bold;
+}
+p {
+  margin:0;
+}
+
+input {
+  border:solid 1px #ccc;
+  border-radius: 5px;
+  padding:7px 14px;
+  margin-bottom:10px
+}
+input:focus {
+  outline:none;
+  border-color:#aaa;
+}
+.sort {
+  padding:8px 30px;
+  border-radius: 6px;
+  border:none;
+  display:inline-block;
+  color:#fff;
+  text-decoration: none;
+  background-color: #28a8e0;
+  height:30px;
+}
+.sort:hover {
+  text-decoration: none;
+  background-color:#1b8aba;
+}
+.sort:focus {
+  outline:none;
+}
+.sort:after {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  content:"";
+  position: relative;
+  top:-10px;
+  right:-5px;
+}
+.sort.asc:after {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #fff;
+  content:"";
+  position: relative;
+  top:13px;
+  right:-5px;
+}
+.sort.desc:after {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #fff;
+  content:"";
+  position: relative;
+  top:-10px;
+  right:-5px;
+}
+
+.panel-body.job_description {
+    overflow-y: scroll;
+    max-height: 200px;
+}
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -28,6 +125,8 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+
 
 </head>
 
@@ -77,6 +176,25 @@
                     <li>jQuery v1.11.1</li>
                 </ul>
             </div>
+
+           <div id="jobs">
+  <input class="search" placeholder="Search" />
+  <button class="sort" data-sort="job_title">
+    Sort by Job Title
+  </button>
+  <button class="sort" data-sort="job_reference">
+    Sort by Job Reference
+  </button>
+
+  <ul class="list">
+    
+  </ul>
+
+  <ul class="pagination"></ul>
+
+</div>
+
+
         </div>
         <!-- /.row -->
 
@@ -89,6 +207,31 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
+    <script type="text/javascript" src="bower_components/list.js/dist/list.js"></script>
+    <script type="text/javascript" src="bower_components/list.pagination.js/dist/list.pagination.js"></script>
+    <script type="text/javascript" src="bower_components/underscore/underscore-min.js"></script>
+
+
+<script type="text/javascript">
+var options = {
+  item: '<div class="panel panel-default"><div class="panel-heading">    <h3 class="panel-title job_title"></h3>  </div>  <div class="panel-body job_description">    Panel content  </div>  <ul class="list-group">    <li class="list-group-item job_location"></li>    <li class="list-group-item job_reference"></li>  </ul></div>',
+   page: 5,
+    plugins: [
+      ListPagination({})
+    ]
+};
+
+var response = $.getJSON('http://broadbean.meteor.com/api/jobs').done(function() {
+
+    console.log(response.responseJSON);
+
+    var jobs =_.map(response.responseJSON.jobs, function(job) {return job.job;});
+
+    var userList = new List('jobs', options, jobs);
+
+});
+
+</script>
 </body>
 
 </html>
