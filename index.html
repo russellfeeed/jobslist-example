@@ -168,32 +168,25 @@ input:focus {
     <div class="container">
 
         <div class="row">
-            <div class="col-lg-12 text-center">
-                <h1>A Bootstrap Starter Template</h1>
-                <p class="lead">Complete with pre-defined file paths that you won't have to change!</p>
-                <ul class="list-unstyled">
-                    <li>Bootstrap v3.3.1</li>
-                    <li>jQuery v1.11.1</li>
-                </ul>
-            </div>
 
-           <div id="jobs">
-  <input class="search" placeholder="Search" />
-  <button class="sort" data-sort="job_title">
-    Sort by Job Title
-  </button>
-  <button class="sort" data-sort="job_reference">
-    Sort by Job Reference
-  </button>
+<!-- RCH the jobs are rendered in here -->
+        <div id="jobs">
+          <input class="search" placeholder="Search" />
+          <button class="sort" data-sort="job_title">
+            Sort by Job Title
+          </button>
+          <button class="sort" data-sort="job_reference">
+            Sort by Job Reference
+          </button>
 
-  <ul class="list">
-    
-  </ul>
+          <ul class="list">
+            
+          </ul>
 
-  <ul class="pagination"></ul>
+          <ul class="pagination"></ul>
 
-</div>
-
+        </div>
+<!-- RCH -->
 
         </div>
         <!-- /.row -->
@@ -207,26 +200,39 @@ input:focus {
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
+    <!-- RCH List and underscore libraries help us build the list -->
     <script type="text/javascript" src="bower_components/list.js/dist/list.js"></script>
     <script type="text/javascript" src="bower_components/list.pagination.js/dist/list.pagination.js"></script>
     <script type="text/javascript" src="bower_components/underscore/underscore-min.js"></script>
-
+    <!-- RCH -->
 
 <script type="text/javascript">
-var options = {
-  item: '<div class="panel panel-default"><div class="panel-heading">    <h3 class="panel-title job_title"></h3>  </div>  <div class="panel-body job_description">    Panel content  </div>  <ul class="list-group">    <li class="list-group-item job_location"></li>    <li class="list-group-item job_reference"></li>  </ul></div>',
-   page: 5,
-    plugins: [
-      ListPagination({})
-    ]
-};
 
-var response = $.getJSON('http://broadbean.meteor.com/api/jobs').done(function() {
+/**
+ * See http://www.listjs.com/docs
+ * Each item in the list is constructed using 'item'. 
+ * For fun, I'm using a bootstrap panel for each job.
+ * class attribute works like a place holder e.g. job_title refers to the field in the job
+ */
+
+    var options = {
+      item: '<div class="panel panel-default"><div class="panel-heading">    <h3 class="panel-title job_title"></h3>  </div>  <div class="panel-body job_description">    Panel content  </div>  <ul class="list-group">    <li class="list-group-item job_location"></li>    <li class="list-group-item job_reference"></li>  </ul></div>',
+       page: 5,
+        plugins: [
+          ListPagination({})
+        ]
+    };
+
+    // Pull all the jobs from broadbean.meteor.com
+    var response = $.getJSON('http://broadbean.meteor.com/api/jobs').done(function() {
 
     console.log(response.responseJSON);
 
+    // Structure which comes back from broadbean.meteor.com isn't quite right
+    // for using with lists.js, so use underscore's map feature
     var jobs =_.map(response.responseJSON.jobs, function(job) {return job.job;});
 
+    // now build and render our jobs list, search input and sort buttons
     var userList = new List('jobs', options, jobs);
 
 });
