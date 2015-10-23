@@ -204,14 +204,23 @@ input:focus {
 
 
 <script>
+    // Little template which helps us display HTML inside another tag
     riot.mount('raw');
 
     // Pull all the jobs from broadbean.meteor.com
+    // ideally we could have used api/job/:id but we're getting cross domain issues.
+    // broadbean2 is old and would need to be made compatible with Meteor 1.0+ to support this.
     var response = $.getJSON('http://broadbean.meteor.com/api/jobs').done(function() {
         console.log(response.responseJSON);
+
+        // just grab the job me want to display
         var job = _.find(response.responseJSON.jobs, function(job) {
+            // match the job which was clicked on in the job list / index.html page
+            // we're using local storage here instead of having an ugly URL
             return job.job._id == localStorage.getItem('jobId');;
         });
+
+      // render the job using the job_details riotjs template
       riot.mount('job_details', job);
     });
 </script>

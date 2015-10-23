@@ -235,12 +235,17 @@ input:focus {
 
     // now build and render our jobs list, search input and sort buttons
     var userList = new List('jobs', options, jobs);
+
+    // attach a click handle to every job in the list
     $('#jobs').on('click', '.panel', function(e) {
+        // grab the job id of the job which was clicked
         id = $('._id', this).html();
         //alert(id);
+        // use local storage to pass the id into job.html
+        // instead of having an ugly URL
         localStorage.setItem('jobId', id);
-        window.location.href = "job.html";
-    })
+        window.location.href = "job.html"; // redirect
+    });
 
 });
 
