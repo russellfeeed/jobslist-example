@@ -180,7 +180,7 @@ input:focus {
           </button>
 
           <ul class="list">
-            
+
           </ul>
 
           <ul class="pagination"></ul>
@@ -210,14 +210,14 @@ input:focus {
 
 /**
  * See http://www.listjs.com/docs
- * Each item in the list is constructed using 'item'. 
+ * Each item in the list is constructed using 'item'.
  * For fun, I'm using a bootstrap panel for each job.
  * Inspect the jobs Object in the browser console to find all the other fields in job.
  * class attribute works like a place holder e.g. job_title refers to the field in the job
  */
 
     var options = {
-      item: '<div class="panel panel-default"><div class="panel-heading">    <h3 class="panel-title job_title"></h3>  </div>  <div class="panel-body job_description">    Panel content  </div>  <ul class="list-group">    <li class="list-group-item job_location"></li>    <li class="list-group-item job_reference"></li>  </ul></div>',
+      item: '<div class="panel panel-default"><div class="panel-heading">    <h3 class="panel-title job_title"></h3>  </div>  <div class="panel-body job_description">    Panel content  </div>  <ul class="list-group">    <li class="list-group-item job_location"></li>    <li class="list-group-item job_reference"></li>  <li class="list-group-item _id hidden"></li> </ul></div>',
        page: 5,
         plugins: [
           ListPagination({})
@@ -235,6 +235,12 @@ input:focus {
 
     // now build and render our jobs list, search input and sort buttons
     var userList = new List('jobs', options, jobs);
+    $('#jobs').on('click', '.panel', function(e) {
+        id = $('._id', this).html();
+        //alert(id);
+        localStorage.setItem('jobId', id);
+        window.location.href = "job.html";
+    })
 
 });
 
