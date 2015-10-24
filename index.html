@@ -228,7 +228,7 @@ input:focus {
  */
 
     var options = {
-      item: '<div class="panel panel-default"><div class="panel-heading">    <h3 class="panel-title job_title"></h3>  </div>  <div class="panel-body job_description">    Panel content  </div>  <ul class="list-group">    <li class="list-group-item job_location"></li>    <li class="list-group-item job_reference"></li>  <li class="list-group-item _id hidden"></li> </ul></div>',
+      item: '<div class="panel panel-default"><div class="panel-heading">    <h3 class="panel-title job_title"></h3>  </div>  <div class="panel-body job_description">    Panel content  </div>  <ul class="list-group">    <li class="list-group-item job_location"></li>    <li class="list-group-item job_reference"></li>  <li class="list-group-item _id hidden"></li> <li class="list-group-item job_type"></li>  <li class="list-group-item salary"></li>  </ul></div>',
        page: 5,
         plugins: [
           ListPagination({})
@@ -244,17 +244,18 @@ input:focus {
     // for using with lists.js, so use underscore's map feature
     var jobs =_.map(response.responseJSON.jobs, function(job) {return job.job;});
 
-    // get all possible locations so we can build a filter
-    var locations = _.map(_.uniq(_.pluck(jobs,'job_location')), function(loc) {return {location: loc};});
-    locations = _.union([{location:'All'}], locations);
+    // Put this line back in to display ONLY featured jobs
+    //jobs = _.filter(jobs, function(job) { return job.featured=='true';})
 
     // now build and render our jobs list, search input and sort buttons
     var userList = new List('jobs', options, jobs);
+    $('#matcheditems').html(userList.matchingItems.length+' Matches');
+    $('#totalitems').html(userList.items.length+' Positions Available');
 
     // update the count display whenever list changes
     userList.on('updated', function() {
         $('#matcheditems').html(userList.matchingItems.length+' Matches');
-        $('#totalitems').html(userList.items.length+' Positions available');
+        $('#totalitems').html(userList.items.length+' Positions Available');
     })
 
     // attach a click handle to every job in the list
@@ -269,6 +270,9 @@ input:focus {
     });
 
     // Create a select based on the locations
+    // get all possible locations so we can build a filter
+    var locations = _.map(_.uniq(_.pluck(jobs,'job_location')), function(loc) {return {location: loc};});
+    locations = _.union([{location:'All'}], locations);
     riot.mount('location-select', {locations: locations, userlist: userList});
 
 });
