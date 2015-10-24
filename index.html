@@ -178,6 +178,10 @@ input:focus {
           <button class="sort" data-sort="job_reference">
             Sort by Job Reference
           </button>
+          <location-select></location-select>
+          <span class="badge" id="matcheditems"></span>
+          <span class="badge" id="totalitems"></span>
+
 
           <ul class="list">
 
@@ -200,10 +204,17 @@ input:focus {
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
+    <!-- RIOT TEMPLATES -->
+    <script src="js/location-select.tag.riot.js" type="riot/tag"></script>
+    <!-- RIOT TEMPLATES -->
+
+
     <!-- RCH List and underscore libraries help us build the list -->
     <script type="text/javascript" src="bower_components/list.js/dist/list.js"></script>
     <script type="text/javascript" src="bower_components/list.pagination.js/dist/list.pagination.js"></script>
     <script type="text/javascript" src="bower_components/underscore/underscore-min.js"></script>
+    <script src="//cdn.jsdelivr.net/g/riot@2.2(riot.min.js+compiler.min.js)"></script>
+
     <!-- RCH -->
 
 <script type="text/javascript">
@@ -233,8 +244,18 @@ input:focus {
     // for using with lists.js, so use underscore's map feature
     var jobs =_.map(response.responseJSON.jobs, function(job) {return job.job;});
 
+    // get all possible locations so we can build a filter
+    var locations = _.map(_.uniq(_.pluck(jobs,'job_location')), function(loc) {return {location: loc};});
+    locations = _.union([{location:'All'}], locations);
+
     // now build and render our jobs list, search input and sort buttons
     var userList = new List('jobs', options, jobs);
+
+    // update the count display whenever list changes
+    userList.on('updated', function() {
+        $('#matcheditems').html(userList.matchingItems.length+' Matches');
+        $('#totalitems').html(userList.items.length+' Positions available');
+    })
 
     // attach a click handle to every job in the list
     $('#jobs').on('click', '.panel', function(e) {
@@ -246,6 +267,9 @@ input:focus {
         localStorage.setItem('jobId', id);
         window.location.href = "job.html"; // redirect
     });
+
+    // Create a select based on the locations
+    riot.mount('location-select', {locations: locations, userlist: userList});
 
 });
 
